@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Place You Should've Never Seen</title>
+<style>
+    body {
+        background-color: #000;
+        color: #0f0;
+        font-family: "Courier New", Courier, monospace;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden;
+    }
+    #terminal {
+        width: 80%;
+        max-width: 800px;
+    }
+    #output {
+        white-space: pre-wrap;
+    }
+    #input-line {
+        display: flex;
+    }
+    #input-line span {
+        margin-right: 5px;
+    }
+    input {
+        background: none;
+        border: none;
+        color: #0f0;
+        outline: none;
+        font-family: "Courier New", Courier, monospace;
+        flex: 1;
+    }
+    .cursor {
+        display: inline-block;
+        width: 10px;
+        background-color: #0f0;
+        margin-left: 2px;
+        animation: blink 1s step-start infinite;
+    }
+    @keyframes blink {
+        50% { background-color: transparent; }
+    }
+</style>
+</head>
+<body>
+<div id="terminal">
+    <div id="output">Welcome to the place you should've never seen.<br>Type 'help' for a list of commands.</div>
+    <div id="input-line">
+        <span>&gt;</span>
+        <input type="text" id="command-input" autofocus>
+        <div class="cursor"></div>
+    </div>
+</div>
+
+<script>
+const output = document.getElementById("output");
+const input = document.getElementById("command-input");
+
+const commands = {
+    help: "Available commands:\nhelp - Show this message\nlook - Describe the place\nreveal - Something mysterious happens\nclear - Clear the terminal",
+    look: "The air is thick and the walls whisper secrets. This is a place you were not meant to see.",
+    reveal: "A hidden pathway appears, glowing faintly. Whatever you do, do not follow it…",
+    clear: ""
+};
+
+input.addEventListener("keydown", function(e) {
+    if (e.key === "Enter") {
+        const cmd = input.value.trim();
+        output.innerHTML += `\n> ${cmd}`;
+        if (commands[cmd]) {
+            if (cmd === "clear") {
+                output.innerHTML = "";
+            } else {
+                output.innerHTML += `\n${commands[cmd]}`;
+            }
+        } else {
+            output.innerHTML += `\nUnknown command: ${cmd}`;
+        }
+        input.value = "";
+        output.scrollTop = output.scrollHeight;
+    }
+});
+</script>
+</body>
+</html>

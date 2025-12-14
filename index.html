@@ -23,6 +23,7 @@
     }
     #output {
         white-space: pre-wrap;
+        line-height: 1.4em;
     }
     #input-line {
         display: flex;
@@ -48,6 +49,10 @@
     @keyframes blink {
         50% { background-color: transparent; }
     }
+    .glitch {
+        color: #0ff;
+        text-shadow: 0 0 5px #0ff, 1px 0 10px #0ff;
+    }
 </style>
 </head>
 <body>
@@ -64,34 +69,87 @@
 const output = document.getElementById("output");
 const input = document.getElementById("command-input");
 
+let steps = 0;
+let secretUnlocked = false;
+let sequenceStep = 0;
+const secretSequence = ["look","reveal","unlock"];
+
 const commands = {
     help: "Available commands:\nhelp - Show this message\nlook - Describe the place\nreveal - Something mysterious happens\nclear - Clear the terminal",
-    look: "The air is thick and the walls whisper secrets. This is a place you were not meant to see.",
-    reveal: "A hidden pathway appears, glowing faintly. Whatever you do, do not follow it…",
+    look: function() {
+        steps++;
+        const descriptions = [
+            "The air is thick and the walls whisper secrets.",
+            "Shadows twist unnaturally here, almost moving.",
+            "You feel like something is observing you from nowhere.",
+            "A faint hum resonates as if the place itself is alive."
+        ];
+        let msg = descriptions[Math.floor(Math.random() * descriptions.length)];
+        if(steps > 3 && !secretUnlocked) msg += "\nSomething changes… perhaps a secret awaits.";
+        return msg;
+    },
+    reveal: function() {
+        return secretUnlocked ? "A hidden path reveals a deeper layer of the terminal." : "A hidden pathway appears, glowing faintly. Whatever you do, do not follow it…";
+    },
     clear: "",
     why: "The place you should've never seen.",
     when: "The place you should've never seen.",
     where: "The place you should've never seen.",
     how: "The place you should've never seen.",
     who: "The place you should've never seen.",
-    mark: "Hey guys and whats up, my name is markiplier, and today this website is brought to use by sparkpacket.\ni couldnt resist adding that in."
+    what: "something. is. beyond.",
+    sparkpacket: "wha huh what what do you want HUH?! WANNA FIGHT?? lo. ",
+    mark: "Hey guys and whats up, my name is markiplier, and today this website is brought to use by sparkpacket.\ni couldnt resist adding that in.",
+    unlock: function() {
+        secretUnlocked = true;
+        return "A strange energy pulses through the terminal...\nYou sense something hidden is now accessible.";
+    },
+    hidden: function() {
+        if(secretUnlocked) return "You have discovered the hidden layer of reality. Congratulations.";
+        return "Unknown command: hidden";
+    },
+    glitch: function() {
+        return "<span class='glitch'>▓▒░ ERROR ░▒▓\nSystem integrity compromised...\nDo you wish to continue? (yes/no)</span>";
+    }
 };
 
+// Typing effect
+function typeOutput(text, callback) {
+    let i = 0;
+    const interval = setInterval(() => {
+        output.innerHTML += text.charAt(i);
+        i++;
+        if(i >= text.length) {
+            clearInterval(interval);
+            if(callback) callback();
+        }
+        output.scrollTop = output.scrollHeight;
+    }, 15);
+}
+
 input.addEventListener("keydown", function(e) {
-    if (e.key === "Enter") {
+    if(e.key === "Enter") {
         const cmd = input.value.trim();
         output.innerHTML += `\n> ${cmd}`;
-        if (commands[cmd]) {
-            if (cmd === "clear") {
-                output.innerHTML = "";
-            } else {
-                output.innerHTML += `\n${commands[cmd]}`;
-            }
-        } else {
-            output.innerHTML += `\nUnknown command: ${cmd}`;
+        
+        // Multi-step secret
+        if(cmd === secretSequence[sequenceStep]) sequenceStep++;
+        else sequenceStep = 0;
+        if(sequenceStep === secretSequence.length) {
+            secretUnlocked = true;
+            output.innerHTML += "\nA secret directory opens: 'hidden'.";
         }
+
+        let response;
+        if(commands[cmd]) {
+            response = typeof commands[cmd] === "function" ? commands[cmd]() : commands[cmd];
+            if(cmd === "clear") output.innerHTML = "";
+        } else {
+            response = "Unknown command: " + cmd;
+        }
+
+        if(cmd !== "clear") typeOutput("\n" + response);
         input.value = "";
-        output.scrollTop = output.scrollHeight;
     }
 });
 </script>

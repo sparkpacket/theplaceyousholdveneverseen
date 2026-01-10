@@ -136,6 +136,30 @@ gumbus: function() {
     });
 
     return "gumbus is coming for you";
+},
+    gumbus: function() {
+    // Create image element
+    const img = document.createElement("img");
+    img.src = "glumbo.png";
+    img.style.position = "fixed";
+    img.style.top = "50%";
+    img.style.left = "50%";
+    img.style.transform = "translate(-50%, -50%)";
+    img.style.maxWidth = "80%";
+    img.style.maxHeight = "80%";
+    img.style.zIndex = 9999;
+    document.body.appendChild(img);
+
+    // Play sound
+    const audio = new Audio("vineboom.mp3"); // Make sure this file exists
+    audio.play();
+
+    // Remove image when sound ends
+    audio.addEventListener("ended", () => {
+        img.remove();
+    });
+
+    return "oh mah god its le glumbo";
 }
 };
 

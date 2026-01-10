@@ -110,7 +110,33 @@ const commands = {
     },
     glitch: function() {
         return "<span class='glitch'>▓▒░ ERROR ░▒▓\nSystem integrity compromised...\nDo you wish to continue? (yes/no)</span>";
-    }
+    },
+
+// Add this inside your existing commands object:
+commands.gumbus = function() {
+    // Create image element
+    const img = document.createElement("img");
+    img.src = "gumbus.png";
+    img.style.position = "fixed";
+    img.style.top = "50%";
+    img.style.left = "50%";
+    img.style.transform = "translate(-50%, -50%)";
+    img.style.maxWidth = "80%";
+    img.style.maxHeight = "80%";
+    img.style.zIndex = 9999;
+    document.body.appendChild(img);
+
+    // Play sound
+    const audio = new Audio("vineboom.mp3"); // Make sure this file exists
+    audio.play();
+
+    // Remove image when sound ends
+    audio.addEventListener("ended", () => {
+        img.remove();
+    });
+
+    return "gumbus is coming for you";
+};
 };
 
 // Typing effect
@@ -152,33 +178,6 @@ input.addEventListener("keydown", function(e) {
         input.value = "";
     }
 });
-</script>
-    <script>
-// Add this inside your existing commands object:
-commands.gumbus = function() {
-    // Create image element
-    const img = document.createElement("img");
-    img.src = "gumbus.png";
-    img.style.position = "fixed";
-    img.style.top = "50%";
-    img.style.left = "50%";
-    img.style.transform = "translate(-50%, -50%)";
-    img.style.maxWidth = "80%";
-    img.style.maxHeight = "80%";
-    img.style.zIndex = 9999;
-    document.body.appendChild(img);
-
-    // Play sound
-    const audio = new Audio("vineboom.mp3"); // Make sure this file exists
-    audio.play();
-
-    // Remove image when sound ends
-    audio.addEventListener("ended", () => {
-        img.remove();
-    });
-
-    return "gumbus is coming for you";
-};
 </script>
 </body>
 </html>
